@@ -5,6 +5,7 @@ import Navbar from "./Component/pages/Navbar";
 import GetStockData from "./Component/GetStockData";
 import LoginUserinfo from "./Component/LoginUserComp/LoginUserinfo";
 import Dashboard from "./Component/pages/Dashboard";
+import LoginPage from "./Component/pages/LoginPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route exact path="/coin/all" element={< GetStockData />}  ></Route>
       <Route exact path='/user' element={< LoginUserinfo />}  ></Route>
       <Route  exact path='/dashboard' element={< Dashboard />} >  </Route>
+      <Route exact path='/login' element={<LoginPage />} > </Route>
      </Routes>
     </div>
   );
