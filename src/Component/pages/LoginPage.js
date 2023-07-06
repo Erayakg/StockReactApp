@@ -42,9 +42,10 @@ export default function LoginPage() {
 
       axios.post('user/authenticate', user)
         .then(res => {
-            const token = res.data;
+            const token = res.data.token;
             console.log(token)
             localStorage.setItem('jwt', token);
+            localStorage.setItem('UserId',res.data.id);
             window.location.href = "/";
           }
          
