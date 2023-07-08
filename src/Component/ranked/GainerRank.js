@@ -28,6 +28,7 @@ function Row({portfolio,Coindata}) {
     console.log(coin)
     return coin ? coin.lastPrice : 0; 
   };
+ 
 
   return (
     <React.Fragment>
@@ -46,7 +47,7 @@ function Row({portfolio,Coindata}) {
         {portfolio.name}
 
         </TableCell>
-        <TableCell align="right">{portfolio.portfolioCoins.length}</TableCell>
+        <TableCell align="right">Krall</TableCell>
         <TableCell align="right">sdfsd</TableCell>
         <TableCell align="right">asdasd</TableCell>
         <TableCell align="right">asdasda</TableCell>
@@ -75,7 +76,9 @@ function Row({portfolio,Coindata}) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {portfolio.portfolioCoins.map((historyRow) => (
+                {
+                portfolio || portfolio.portfolioCoins  == null ? <CircularProgress> </CircularProgress>:
+                portfolio.portfolioCoins.map((historyRow) => (
                     <TableRow key={historyRow.id}>
                     <TableCell component="th" scope="row">
                         {historyRow.name}

@@ -2,23 +2,76 @@ import * as React from 'react';
 import { Box, Typography, Card, CardContent, CardHeader, Grid, List, ListItem, ListItemText, Button, ListItemSecondaryAction, IconButton, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom'; 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import axios from 'axios';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 
 import { useState,useEffect } from 'react';
+import DialogContentText from '@mui/material/DialogContentText';
 
 const Dashboard = () => {
+  const [boughtPrice, setBoughtPrice] = useState(null);
+  const [coinName, setCoinName] = useState('');
+  const [quantity, setQuantity] = useState(null);
+  const selectedPortfolioId=1;
+  const handleSubmit = (e) => {
+    const token = localStorage.getItem("jwt");
 
-    
+    e.preventDefault();
+    console.log(token)
+    // Verileri JSON formatına dönüştür
+    const data = JSON.stringify({
+      boughtPrice,
+      coinName,
+      quantity,
+      portfolioId: selectedPortfolioId
+    });
+
+    const URL="/portfolio/add"+1
+    // POST isteği gönder
+    axios.post(URL, data, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token
+
+      }
+    })
+      .then(response => {
+        // İstek başarılıysa veya sonuçları işlemek için gerekli diğer adımları burada gerçekleştirin
+        console.log('POST isteği başarılı:', response.data);
+      })
+      .catch(error => {
+        // İstek başarısız olduysa veya hata oluştuysa burada işlem yapabilirsiniz
+        console.error('POST isteği başarısız:', error);
+      });
+
+    // Input alanlarını temizle
+    setBoughtPrice(null);
+    setCoinName('');
+    setQuantity(null);
+  };
+
   const [openDialog, setOpenDialog] = useState(false);
   const [portfolioName, setPortfolioName] = useState("");
-    
+  const[openCoinDialog,setOpenCpinDialog]=useState(false);
+  
  
   const handleCreatePortfolio = () => {
     setOpenDialog(true);
   }
-  
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCoinDialog = () => {
+    setOpenCpinDialog(false);
+  }
+
   const handleDialogClose = () => {
     setOpenDialog(false);
   }
@@ -79,7 +132,8 @@ const Dashboard = () => {
           fetchData();
           console.log(UserData);
         
-        },[])
+        },[handleCreatePortfolio])
+
 
   let navigate = useNavigate();
 
@@ -103,6 +157,55 @@ const Dashboard = () => {
   }
   return (
         <>
+  <Dialog open={open} onClose={handleClose}>
+  <Card>
+      <CardContent>
+        <Typography variant="h5" component="h2" gutterBottom>
+          Ekle
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          {/* Input alanları */}
+          <TextField
+            label="Bought Price"
+            type="number"
+            value={boughtPrice}
+            onChange={(e) => setBoughtPrice(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Coin Name"
+            value={coinName}
+            onChange={(e) => setCoinName(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Quantity"
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+
+          <Button type="submit" variant="contained" color="primary">
+            Ekle
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Subscribe</Button>
+        </DialogActions>
+      </Dialog>
+
+
+       
     <Dialog open={openDialog} onClose={handleDialogClose}>
     <DialogTitle>Create a new Portfolio</DialogTitle>
     <DialogContent>
@@ -125,18 +228,22 @@ const Dashboard = () => {
       <Typography variant="h4" gutterBottom>
         Portfolio
       </Typography>
+     
+      
+
 
       <Box sx={{ bgcolor: 'success.main', p: 2, mb: 3 }}>
         <Typography variant="h6" color="white">
           Kazanç / Zarar: + $ 1500.00
         </Typography>
       </Box>
-
-      <Grid container spacing={3}>
-        {UserData.portfolios.length === 0 ? (
-          <Button variant="contained" color="primary" onClick={handleCreatePortfolio}>
+      <Button variant="contained" color="primary" onClick={handleCreatePortfolio}>
             Create Portfolio
           </Button>
+
+      <Grid container spacing={3}>
+        {UserData.portfolios === null ? (
+        <p>Portfolio ekle</p>
         ) : (
           UserData.portfolios.map((portfolio, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
@@ -150,21 +257,24 @@ const Dashboard = () => {
                   title={portfolio.name}
                 />
                 <CardContent>
-                  <List>
-                    {UserData.portfolios.PortfolioCoin.map((coin, index) => (
-                      <ListItem key={index}>
-                        <ListItemText 
-                          primary={coin.name}
-                          secondary={`Amount: ${coin.bougthPrice}, Cost: $${coin.salePrice}`}
-                        />
-                        <ListItemSecondaryAction>
-                          <IconButton edge="end" onClick={() => handleSellCoin(coin)}>
-                            <RemoveCircleOutlineIcon />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    ))}
-                  </List>
+                <List>
+            {portfolio.portfolioCoins !== null ? (
+              portfolio.portfolioCoins.map((coin, index) => (
+                <ListItem key={index}>
+                  <ListItemText 
+                    primary={coin.name}
+                    secondary={`Amount: ${coin.boughtPrice}, Cost: $${coin.salePrice}`}
+                  />
+                  <ListItemSecondaryAction>
+                    {/* Gerekli işlemleri burada gerçekleştirin */}
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))
+            ) : (
+              <Button onClick={handleClickOpen}>Coin ekle</Button>
+            )}
+          </List>
+
                 </CardContent>
               </Card>
             </Grid>

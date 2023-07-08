@@ -16,7 +16,7 @@ export default function HomePage(){
       
     
     
-      <div className="Coininfo" ><GetStockData /></div>
+      <div className="Coininfo" > <GetStockData /></div>
     </div>
 
 </div>
