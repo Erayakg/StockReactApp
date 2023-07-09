@@ -9,25 +9,28 @@ import { useState,useEffect } from 'react';
 import DialogContentText from '@mui/material/DialogContentText';
 
 const Dashboard = () => {
-  const [boughtPrice, setBoughtPrice] = useState(null);
+  const [ bougthprice, setBoughtPrice] = useState(null);
   const [coinName, setCoinName] = useState('');
   const [quantity, setQuantity] = useState(null);
-  const selectedPortfolioId=1;
+  const [selectedPortfolioId, setSelectedPortfolioId] = useState(null); // Bu satırı ekleyin
+  const [openCoinDialog, setOpenCoinDialog] = useState(false); // Bu satırı düzeltin
+  
   const handleSubmit = (e) => {
     const token = localStorage.getItem("jwt");
 
     e.preventDefault();
     console.log(token)
     // Verileri JSON formatına dönüştür
-    const data = JSON.stringify({
-      boughtPrice,
+    const data = JSON.stringify([{
+      bougthprice,
       coinName,
-      quantity,
-      portfolioId: selectedPortfolioId
-    });
+      quantity, 
+    }]);
 
-    const URL="/portfolio/add"+1
+    const URL="/portfolio/add/"+selectedPortfolioId
     // POST isteği gönder
+    console.log(URL)
+    console.log(data)
     axios.post(URL, data, {
       headers: {
         'Content-Type': 'application/json',
@@ -36,11 +39,12 @@ const Dashboard = () => {
       }
     })
       .then(response => {
-        // İstek başarılıysa veya sonuçları işlemek için gerekli diğer adımları burada gerçekleştirin
+        
         console.log('POST isteği başarılı:', response.data);
+        setOpenCoinDialog(false);
+        fetchData();  
       })
       .catch(error => {
-        // İstek başarısız olduysa veya hata oluştuysa burada işlem yapabilirsiniz
         console.error('POST isteği başarısız:', error);
       });
 
@@ -52,7 +56,6 @@ const Dashboard = () => {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [portfolioName, setPortfolioName] = useState("");
-  const[openCoinDialog,setOpenCpinDialog]=useState(false);
   
  
   const handleCreatePortfolio = () => {
@@ -69,7 +72,7 @@ const Dashboard = () => {
   };
 
   const handleCoinDialog = () => {
-    setOpenCpinDialog(false);
+    setOpenCoinDialog(false);
   }
 
   const handleDialogClose = () => {
@@ -93,6 +96,7 @@ const Dashboard = () => {
     .then(response => {
       console.log(response.data);
       // Here you may want to update your portfolio list with the new portfolio
+      fetchData();
     })
     .catch(error => {
       console.error(error);
@@ -132,7 +136,7 @@ const Dashboard = () => {
           fetchData();
           console.log(UserData);
         
-        },[handleCreatePortfolio])
+        },[])
 
 
   let navigate = useNavigate();
@@ -144,9 +148,9 @@ const Dashboard = () => {
 
 
   const handleBuyCoin = (portfolio) => {
-    // Handle buy coin logic here
+    setOpenCoinDialog(true);
+    setSelectedPortfolioId(portfolio.id);
   }
-
   const handleSellCoin = (coin) => {
     // Handle sell coin logic here
   }
@@ -156,54 +160,49 @@ const Dashboard = () => {
     )
   }
   return (
-        <>
-  <Dialog open={open} onClose={handleClose}>
-  <Card>
-      <CardContent>
-        <Typography variant="h5" component="h2" gutterBottom>
-          Ekle
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          {/* Input alanları */}
-          <TextField
-            label="Bought Price"
-            type="number"
-            value={boughtPrice}
-            onChange={(e) => setBoughtPrice(e.target.value)}
-            required
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Coin Name"
-            value={coinName}
-            onChange={(e) => setCoinName(e.target.value)}
-            required
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Quantity"
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            required
-            fullWidth
-            margin="normal"
-          />
-
-          <Button type="submit" variant="contained" color="primary">
-            Ekle
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
-        </DialogActions>
+       
+   <>
+      <Dialog open={openCoinDialog} onClose={() => setOpenCoinDialog(false)}>
+        <Card>
+          <CardContent>
+            <Typography variant="h5" component="h2" gutterBottom>
+              Coin Ekle
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              {/* Input alanları */}
+              <TextField
+                label="Bought Price"
+                type="number"
+                value={bougthprice}
+                onChange={(e) => setBoughtPrice(e.target.value)}
+                required
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Coin Name"
+                value={coinName}
+                onChange={(e) => setCoinName(e.target.value)}
+                required
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Quantity"
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                required
+                fullWidth
+                margin="normal"
+              />
+              <Button type="submit" variant="contained" color="primary">
+                Ekle
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </Dialog>
-
 
        
     <Dialog open={openDialog} onClose={handleDialogClose}>
@@ -263,7 +262,7 @@ const Dashboard = () => {
                 <ListItem key={index}>
                   <ListItemText 
                     primary={coin.name}
-                    secondary={`Amount: ${coin.boughtPrice}, Cost: $${coin.salePrice}`}
+                    secondary={`Amount: ${coin.bougthprice}, Cost: $${coin.salePrice}`}
                   />
                   <ListItemSecondaryAction>
                     {/* Gerekli işlemleri burada gerçekleştirin */}

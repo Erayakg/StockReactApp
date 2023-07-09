@@ -19,16 +19,30 @@ import { Button } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
 
+
 function Row({portfolio,Coindata}) {
- 
+
+ console.log("portfolio",portfolio)
   const [open, setOpen] = React.useState(false);
 
   const getCurrentValueOfCoin = (coinName) => {
     const coin = Coindata.find(coin => coin.symbol === coinName);
-    console.log(coin)
     return coin ? coin.lastPrice : 0; 
   };
- 
+  const calculatePortfolioValue = () => {
+    return portfolio.portfolioCoins.reduce((total, coin) => {
+      const avgPrice = parseFloat(coin.totalprice) / parseFloat(coin.quantity);
+      return total + (avgPrice * coin.quantity);
+    }, 0);
+  };
+
+  const calculateProfitLoss = () => {
+    return portfolio.portfolioCoins.reduce((total, coin) => {
+      const currentValue = parseFloat(getCurrentValueOfCoin(coin.name));
+      const initialPrice = parseFloat(coin.bougthPrice);
+      return total + ((currentValue - initialPrice) * coin.quantity);
+    }, 0);
+  };
 
   return (
     <React.Fragment>
@@ -47,10 +61,9 @@ function Row({portfolio,Coindata}) {
         {portfolio.name}
 
         </TableCell>
-        <TableCell align="right">Krall</TableCell>
-        <TableCell align="right">sdfsd</TableCell>
-        <TableCell align="right">asdasd</TableCell>
-        <TableCell align="right">asdasda</TableCell>
+        <TableCell align="right">{portfolio.portfolioCoins.length}</TableCell>
+        <TableCell align="right">{calculatePortfolioValue().toFixed(2)}</TableCell>
+        <TableCell align="right">{calculateProfitLoss().toFixed(2)}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -70,25 +83,25 @@ function Row({portfolio,Coindata}) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Coin Adı</TableCell>
-                    <TableCell>Alım fiyatı</TableCell>
+                    <TableCell>Ortalama Alım fiyatı</TableCell>
                     <TableCell align="right">Adet</TableCell>
                     <TableCell align="right">Kar/Zarar</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                 {
-                portfolio || portfolio.portfolioCoins  == null ? <CircularProgress> </CircularProgress>:
+                portfolio   == null ? <CircularProgress> </CircularProgress>:
                 portfolio.portfolioCoins.map((historyRow) => (
                     <TableRow key={historyRow.id}>
                     <TableCell component="th" scope="row">
                         {historyRow.name}
                     </TableCell>
-                    <TableCell>{historyRow.bougthPrice}</TableCell>
+                    <TableCell>{(parseFloat(historyRow.totalprice)/parseFloat(historyRow.quantity)).toFixed(2)}</TableCell>
                     <TableCell align="right">{historyRow.quantity}</TableCell>
                     <TableCell align="right">
                         {
-                         (parseFloat(getCurrentValueOfCoin(historyRow.name))-parseFloat(historyRow.bougthPrice))*historyRow.quantity
-                       }
+                           ((parseFloat(getCurrentValueOfCoin(historyRow.name))-parseFloat(historyRow.bougthPrice))*historyRow.quantity)+"$"
+                        }
                     </TableCell>
                     </TableRow>
                 ))}

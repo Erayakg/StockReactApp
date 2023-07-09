@@ -20,11 +20,13 @@ function Navbar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [ıtem,Setıtem]=React.useState(null);
 
-  function localItem(){
-    Setıtem(localStorage.getItem("UserId")); 
   
-  }
   React.useEffect(()=>{
+
+    function localItem(){
+      Setıtem(localStorage.getItem("UserId")); 
+    
+    }
 
     localItem();
 
@@ -33,6 +35,7 @@ function Navbar() {
 const pages = ['Coins', 'User', 'Portfolio'];
 
 const settings = ıtem != null ? ['Profile', 'Dashboard', 'Logout'] : ['Profile', 'Dashboard', 'Login'];
+
 const settingsLink=['/user','/dashboard', ıtem != null ? '/logout' : '/login'];
 
   const handleOpenNavMenu = (event) => {
@@ -162,7 +165,9 @@ const settingsLink=['/user','/dashboard', ıtem != null ? '/logout' : '/login'];
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-           {settings.map((setting, index) => (
+           {
+           ıtem == null ? <Link to={"/login"} ><Button >Login</Button></Link> :
+           settings.map((setting, index) => (
   <MenuItem key={setting} onClick={handleCloseUserMenu}>
     <Link to={settingsLink[index]}>
       <Typography textAlign="center">{setting}</Typography>
