@@ -20,7 +20,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
-  const [role, setRole] = useState('');
   const [username, setUsername] = useState('');
 
   const handleJustifyClick = (value) => {
@@ -43,8 +42,8 @@ export default function LoginPage() {
       axios.post('user/authenticate', user)
         .then(res => {
             const token = res.data.token;
-            console.log(token)
-            localStorage.setItem('jwt', token);
+          console.log(token);
+          localStorage.setItem('jwt', token);
             localStorage.setItem('UserId',res.data.id);
             window.location.href = "/";
           }
@@ -57,7 +56,7 @@ export default function LoginPage() {
         surname: surname,
         email: email,
         password: password,
-        role: role,
+        role: "User",
       };
 
       axios.post('user/add', user)
@@ -68,7 +67,6 @@ export default function LoginPage() {
     setPassword('');
     setName('');
     setSurname('');
-    setRole('');
     setUsername('');
   };
 
@@ -87,12 +85,12 @@ export default function LoginPage() {
             </MDBTabsLink>
           </MDBTabsItem>
         </MDBTabs>
-        
+
         <MDBTabsContent>
           <MDBTabsPane show={justifyActive === 'tab1'}>
             <MDBInput
               wrapperClass='mb-4'
-              label='Username'
+              label='Name'
               id='form1'
               type='text'
               value={username}
@@ -141,14 +139,6 @@ export default function LoginPage() {
               type='password'
               value={password}
               onChange={e => setPassword(e.target.value)}
-            />
-            <MDBInput
-              wrapperClass='mb-4'
-              label='Role'
-              id='form7'
-              type='text'
-              value={role}
-              onChange={e => setRole(e.target.value)}
             />
             <MDBBtn type="submit" className="mb-4 w-100">Sign up</MDBBtn>
           </MDBTabsPane>

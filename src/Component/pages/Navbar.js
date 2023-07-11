@@ -14,33 +14,23 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from 'react-router-dom';
 
-
 function Navbar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [ıtem,Setıtem]=React.useState(null);
+  const [item, setItem] = React.useState(null);
 
-  
-  React.useEffect(()=>{
-
-    function localItem(){
-      Setıtem(localStorage.getItem("UserId")); 
-    
+  React.useEffect(() => {
+    function localItem() {
+      setItem(localStorage.getItem('UserId'));
     }
 
     localItem();
-
-  },[])
-  
-const pages = ['Coins', 'User', 'Portfolio'];
-
-const settings = ıtem != null ? ['Profile', 'Dashboard', 'Logout'] : ['Profile', 'Dashboard', 'Login'];
-
-const settingsLink=['/user','/dashboard', ıtem != null ? '/logout' : '/login'];
+  }, []);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -52,6 +42,15 @@ const settingsLink=['/user','/dashboard', ıtem != null ? '/logout' : '/login'];
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('UserId');
+    setItem(localStorage.getItem('UserId'));
+    window.location.reload(); // Refresh the page after logout
+  };
+
+  const settings = item != null ? ['Profile', 'Dashboard', 'Logout'] : ['Profile', 'Dashboard', 'Login'];
+  const settingsLink = item != null ? ['/user', '/dashboard', '/logout'] : ['/login'];
 
   return (
     <AppBar position="static">
@@ -105,11 +104,7 @@ const settingsLink=['/user','/dashboard', ıtem != null ? '/logout' : '/login'];
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              {/* Removed the "Coins," "User," and "Portfolio" links */}
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -132,15 +127,7 @@ const settingsLink=['/user','/dashboard', ıtem != null ? '/logout' : '/login'];
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            {/* Removed the "Coins," "User," and "Portfolio" links */}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -165,15 +152,21 @@ const settingsLink=['/user','/dashboard', ıtem != null ? '/logout' : '/login'];
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-           {
-           ıtem == null ? <Link to={"/login"} ><Button >Login</Button></Link> :
-           settings.map((setting, index) => (
-  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-    <Link to={settingsLink[index]}>
-      <Typography textAlign="center">{setting}</Typography>
-    </Link>
-  </MenuItem>
-))}
+              {item == null ? (
+                <Link to="/login">
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">Login</Typography>
+                  </MenuItem>
+                </Link>
+              ) : (
+                settings.map((setting, index) => (
+                  <MenuItem key={setting} onClick={setting === 'Logout' ? handleLogout : handleCloseUserMenu}>
+                    <Link to={settingsLink[index]}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </Link>
+                  </MenuItem>
+                ))
+              )}
             </Menu>
           </Box>
         </Toolbar>
@@ -181,4 +174,5 @@ const settingsLink=['/user','/dashboard', ıtem != null ? '/logout' : '/login'];
     </AppBar>
   );
 }
+
 export default Navbar;

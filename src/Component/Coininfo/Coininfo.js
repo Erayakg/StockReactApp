@@ -14,7 +14,6 @@ function Coininfo({ data }) {
   useEffect(() => {
     if (data != null) {
       setisLoaded(true);
-      console.log(data)
     }
   }, [data]);
 

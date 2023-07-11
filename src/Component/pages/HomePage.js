@@ -3,7 +3,6 @@
 import Coininfo from "../Coininfo/Coininfo";
 import GetStockData from "../GetStockData";
 
-
 import "../ranked/ranked.css"
 
 

@@ -24,7 +24,7 @@ function GetStockData() {
             ? response.data
             : Object.values(response.data);
           setStockData(responseData);
-          console.log("Coin Data:", responseData);
+         
 
         })
         .catch(function (error) {
@@ -40,7 +40,7 @@ function GetStockData() {
             ? response.data
             : Object.values(response.data);
           setportfolioData(responseData);
-          console.log("Portfolio Data:", responseData);
+          console.log("Portfolio Data:" );
 
         })
         .catch(function (error) {
@@ -59,18 +59,14 @@ function GetStockData() {
   } else {
     return (
       <div>
-      <Grid container spacing={2}>
-        <Grid item xs={5}>
+      <Grid container >
+        <Grid item >
           <Paper elevation={3} style={{ padding: '10px', margin: '5px' }}>
             <GainerRank data={portfolioData} Coindata={stockData} />
           </Paper>
         </Grid>
   
-        <Grid item xs={5}>
-          <Paper elevation={3} style={{ padding: '10px', margin: '5px' }}>
-            <Userrank />
-          </Paper>
-        </Grid>
+       
       </Grid>
       <div style={{ marginTop: '20px' }}>
         <Coininfo data={stockData} />

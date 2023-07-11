@@ -18,8 +18,10 @@ import {
 } from 'mdb-react-ui-kit';
 import axios from 'axios';
 import { CircularProgress } from '@mui/material';
-export default function UserDetails() {
+import './UserDetail.css'; // Your CSS file
 
+export default function UserDetails() {
+ 
 
 
 function fetchData(){
@@ -58,25 +60,23 @@ useEffect(()=>{
    }
   return (
 
-    <section style={{ backgroundColor: '#eee' }}>
-      <MDBContainer className="py-5">
-       
-        <MDBRow>
-          <MDBCol lg="4">
-            <MDBCard className="mb-4">
-              <MDBCardBody className="text-center">
-                <MDBCardImage
-                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                  alt="avatar"
-                  className="rounded-circle"
-                  style={{ width: '150px' }}
-                  fluid />
-                <p className="text-muted mb-1"> kras</p>
-                <p className="text-muted mb-4">Bay Area, San Francisco, CA</p>
-                <div className="d-flex justify-content-center mb-2">
-                  <MDBBtn>Follow</MDBBtn>
-                  <MDBBtn outline className="ms-1">Message</MDBBtn>
-                </div>
+    <section className="user-details-section">
+    <MDBContainer className="py-5">
+      <MDBRow>
+        <MDBCol lg="4">
+          <MDBCard className="profile-card mb-4">
+            <MDBCardBody className="text-center">
+              <MDBCardImage
+                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                alt="avatar"
+                className="rounded-circle profile-image"
+                fluid />
+              <p className="text-muted mb-1 profile-name">kras</p>
+              <p className="text-muted mb-4 profile-location">Bay Area, San Francisco, CA</p>
+              <div className="d-flex justify-content-center mb-2">
+                <MDBBtn className="profile-button">Follow</MDBBtn>
+                <MDBBtn outline className="ms-1 profile-button">Message</MDBBtn>
+              </div>
               </MDBCardBody>
             </MDBCard>
 

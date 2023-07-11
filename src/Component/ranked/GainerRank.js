@@ -18,11 +18,8 @@ import { useEffect } from 'react';
 import { Button } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
-
-
 function Row({portfolio,Coindata}) {
 
- console.log("portfolio",portfolio)
   const [open, setOpen] = React.useState(false);
 
   const getCurrentValueOfCoin = (coinName) => {
@@ -122,7 +119,6 @@ export default function GainerRank({data,Coindata}) {
 useEffect(() => {
   if (data != null || Coindata !=null) {
     setisLoaded(true);
-    console.log(data);
   }
 }, [data]);
 
